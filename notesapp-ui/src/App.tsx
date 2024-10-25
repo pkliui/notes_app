@@ -153,7 +153,7 @@ const App = () => {
 
 
   // reset form
-  const handleCancel = () =>{
+  const handleCancel = (event: React.FormEvent) =>{
     setTitle("")
     setContent("")
     setSelectedNote(null);
@@ -184,6 +184,7 @@ const App = () => {
 
   return (
     <div className="app-container">
+      <h1 className="app-title">The Green Notes App</h1>
       {/* 
       // set up a submission form for notes 
       */}
@@ -234,7 +235,9 @@ const App = () => {
             // add an existing note on a click
             onClick={() => handleNoteClick(note)}
           >
-            <div className="notes-header">
+            <div className="notes-header"  onClick={() => handleNoteClick(note)}
+                // add an existing note on a click
+            >
               <button
                 // delete button
                 onClick={(event) => 
