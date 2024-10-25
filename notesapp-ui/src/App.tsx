@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 // give notes a type 
@@ -15,28 +15,7 @@ const App = () => {
   // store all notes inside a state and give note the Note type,you may initialize using a dummy array
 
   // set of dummy notes
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      id: 1,
-      title: "test note 1",
-      content: "content",
-    },
-    {
-      id: 2,
-      title: "test note 2",
-      content: "content",
-    },
-    {
-      id: 3,
-      title: "test note 3",
-      content: "content",
-    },
-    {
-      id: 4,
-      title: "test note 4",
-      content: "content",
-    }
-    ]);
+  const [notes, setNotes] = useState<Note[]>([]);
     
   //
   // set state variables
@@ -46,6 +25,25 @@ const App = () => {
   const [content, setContent] = useState("");
   // state variable for a selected note (null because we not not have selected any note)
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+
+  // set up API stuff
+  useEffect(()=> {
+    // get notes from DB
+    const fetchNotes = async() => {
+      try{
+        const response = await fetch("http://localhost:5000/api/notes")
+        const notes: Note[] = await response.json()
+        // update notes we just got rom API
+        setNotes(notes)
+      } catch(e){
+        // handle errors that may come from API
+        console.log(e);
+      }
+    };
+    fetchNotes();
+  }, []);
+
 
   //
   // set handlers
@@ -125,7 +123,7 @@ const App = () => {
   ) => {
     event.stopPropagation();
     const updateNotes = notes.filter(
-      (note) => note.id != noteId
+      (note) => note.id !== noteId
     )
     setNotes(updateNotes)
   }
