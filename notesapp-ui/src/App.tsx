@@ -134,7 +134,6 @@ const App = () => {
       // receive the note we just updated
       const updatedNote = await response.json();
 
-
       // map function runs thru an array and now we check if we need to update the note (if the id matched selected id)
       const updatedNotesList = notes.map((note)=>
         note.id === selectedNote.id // if matches
@@ -162,15 +161,24 @@ const App = () => {
 
 
   // delete a note
-  const deleteNote = (
+  const deleteNote = async (
     event: React.MouseEvent,
     noteId: number
   ) => {
     event.stopPropagation();
-    const updateNotes = notes.filter(
-      (note) => note.id !== noteId
-    )
-    setNotes(updateNotes)
+    try{
+      await fetch(`http://localhost:5000/api/notes/${noteId}`,
+        {
+          method:"DELETE",
+        })
+        }catch(e){
+    }
+
+    // get the filtered notes list
+    const filteredNotesList = notes.filter(
+      (note) => note.id !== noteId)
+    // update the notes' state
+    setNotes(filteredNotesList);
   }
 
 
