@@ -1,9 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+/notesapp-ui/node_modules
+/notesapp-server/node_modules
 
 # testing
 /coverage
