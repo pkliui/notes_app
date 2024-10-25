@@ -59,23 +59,48 @@ const App = () => {
   };
 
 
-  const handleAddNote = (event: React.FormEvent) => {
+  const handleAddNote = async (event: React.FormEvent) => {
     // take in event as param, need to say this is of type FormEvent, otherwise TS will complain
     // add preventDefault to prevent from reloading the page upon submitting!
     event.preventDefault();
 
     // create a new note
-    const newNote: Note = {
-      id: notes.length + 1,
-      title: title,
-      content: content
-    }
+    // const newNote: Note = {
+    //   id: notes.length + 1,
+    //   title: title,
+    //   content: content
+    // }
+
+
+
+    try{
+      const response = await fetch
+      ("http://localhost:5000/api/notes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            content
+          })
+        }
+       );
+
+      // receive the note we just posted
+      const newNote = await response.json();
+
     // update the state with this note,
     // pass new array - the (1st) one we just created and the rest of the notes
     setNotes([newNote, ...notes]);
     // clean up the submission forms for a nice UI
     setTitle("");
     setContent("");
+      }
+      catch(error){
+        console.log(error);
+      }
   };
 
 
