@@ -38,10 +38,27 @@ const App = () => {
     }
     ]);
     
-
+  //
+  // set state variables
+  //
   // use state variables for form inputs
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  // state variable for a selected note (null because we not not have selected any note)
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  //
+  // set handlers
+  //
+  // handle a click on a note - accepts a note that the user clicked on
+  // to actually know what the selected note (potentially up for a change) is
+  const handleNoteClick = (note: Note) => {
+    // no need to create a new note, just get the selected one
+    // update title and content accordingly
+    setSelectedNote(note);
+    setTitle(note.title);
+    setContent(note.content);
+  };
 
 
   const handleAddNote = (event: React.FormEvent) => {
@@ -61,9 +78,9 @@ const App = () => {
     // clean up the submission forms for a nice UI
     setTitle("");
     setContent("");
-
-
   };
+
+
 
 
   return (
@@ -103,7 +120,10 @@ const App = () => {
       <div className="notes-grid">
         {notes.map((note) => (
           //Display all notes using the markup below by means of the map function
-          <div className="note-item">
+          <div className="note-item"
+            // add an existing note on a click
+            onClick={() => handleNoteClick(note)}
+          >
             <div className="notes-header">
               <button>x</button>
             </div>
