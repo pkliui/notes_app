@@ -39,17 +39,60 @@ const App = () => {
     ]);
     
 
+  // use state variables for form inputs
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+
+  const handleAddNote = (event: React.FormEvent) => {
+    // take in event as param, need to say this is of type FormEvent, otherwise TS will complain
+    // add preventDefault to prevent from reloading the page upon submitting!
+    event.preventDefault();
+
+    // create a new note
+    const newNote: Note = {
+      id: notes.length + 1,
+      title: title,
+      content: content
+    }
+    // update the state with this note,
+    // pass new array - the (1st) one we just created and the rest of the notes
+    setNotes([newNote, ...notes]);
+    // clean up the submission forms for a nice UI
+    setTitle("");
+    setContent("");
+
+
+  };
+
+
   return (
     <div className="app-container">
       {/* 
       // set up a submission form for notes 
       */}
-      <form className="note-form">
+      <form className="note-form"
+        onSubmit={handleAddNote}
+      >
         {/* 
         // set up form's title and content area
         */}
-        <input placeholder="Title" required />
-        <textarea placeholder="Content" rows={10} required />
+        <input 
+          // title input - binded to the title state variable = whatever title state variable is
+          value={title}
+          onChange={(event)=>
+            setTitle(event.target.value)
+          }
+          placeholder="What do you want to note?" required
+        />
+        <textarea 
+        // text area - binded to the content state variable
+        value={content}
+        onChange={(event)=>
+          setContent(event.target.value)
+        }
+      placeholder="Anything else you forgot to add?" rows={10}
+        />
 
         <button type="submit">Add Note</button>
       </form>
