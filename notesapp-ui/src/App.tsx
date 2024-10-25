@@ -81,7 +81,40 @@ const App = () => {
   };
 
 
+  // update a selected note
+  const handleUpdateNote = (
+    event: React.FormEvent
+  ) => {
+    event.preventDefault();
+    if(!selectedNote){
+      return;
+    }
+    // actually update the note
+    const updatedNote: Note = {
+      id: selectedNote.id,
+      title: title,
+      content: content,
+    }
+    // map function runs thru an array and now we check if we need to update the note (if the id matched selected id)
+    const updatedNotesList = notes.map((note)=>
+      note.id === selectedNote.id // if matches
+      ? updatedNote // update the note
+      : note
+    )
+    // update the notes' state
+    setNotes(updatedNotesList)
+    // upfate the submission form's title and content
+    setTitle("")
+    setContent("")
+    setSelectedNote(null)
+  };
 
+  // reset form
+  const handleCancel = () =>{
+    setTitle("")
+    setContent("")
+    setSelectedNote(null);
+  }
 
   return (
     <div className="app-container">
@@ -89,7 +122,12 @@ const App = () => {
       // set up a submission form for notes 
       */}
       <form className="note-form"
-        onSubmit={handleAddNote}
+        // wire up the submit function to the form
+        onSubmit={(event) => 
+          selectedNote
+          ? handleUpdateNote(event)
+          : handleAddNote(event)
+        }
       >
         {/* 
         // set up form's title and content area
@@ -103,15 +141,21 @@ const App = () => {
           placeholder="What do you want to note?" required
         />
         <textarea 
-        // text area - binded to the content state variable
-        value={content}
-        onChange={(event)=>
-          setContent(event.target.value)
+          // text area - binded to the content state variable
+          value={content}
+          onChange={(event)=> setContent(event.target.value)
         }
-      placeholder="Anything else you forgot to add?" rows={10}
+          placeholder="Anything else you forgot to add?" rows={10}
         />
 
-        <button type="submit">Add Note</button>
+        {selectedNote ? (
+            // handle button logic depending if a note was selected or not 
+            <div className="edit-buttons">
+              <button type="submit">Save</button>
+              <button onClick={handleCancel}>Cancel</button>
+            </div>
+          ):(
+            <button type="submit">Add Note</button>)}      
       </form>
       
       {/* 
