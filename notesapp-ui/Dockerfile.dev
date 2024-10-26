@@ -1,0 +1,10 @@
+# this is a Dockerile for notesapp-ui
+FROM node:20.11.0
+
+WORKDIR /app
+COPY ./package*.json ./
+RUN npm i
+
+COPY . .
+
+CMD ["npm", "run",  "start"]

@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./notesapp-ui
+    ports:
+      - "80:3000"
+
+      
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./notesapp-server
+    ports:
+      - "5000:5000"
+    environment:
+      - .env
+
+
+
+
+
