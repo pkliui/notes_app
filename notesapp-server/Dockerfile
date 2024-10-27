@@ -1,5 +1,5 @@
 # this is a Dockerile for notesapp-server
-FROM node:20.11.0
+FROM node:lts-alpine
 
 WORKDIR /app
 
