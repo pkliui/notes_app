@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "8000:80"
+
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./notesapp-ui
+    ports:
+      - "3000:3000"
+
+      
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: ./notesapp-server
+    ports:
+      - "5000:5000"
+    environment:
+      - .env
+
+
+
+
+
