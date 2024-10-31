@@ -4,7 +4,7 @@ WORKDIR /app
 COPY ./package*.json ./
 RUN npm i
 COPY . .
-RUN npm run ec2-build
+RUN npm run build
 
 FROM nginx:1.21.4-alpine
 COPY --from=build /app/build /usr/share/nginx/html

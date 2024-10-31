@@ -20,8 +20,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "ec2-start": "CI=true;export CI; react-scripts start",
-    "ec2-build": "CI=true;export CI; react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
