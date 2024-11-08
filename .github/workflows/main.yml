@@ -3,7 +3,7 @@ name: Continuously deploy on EC2 by scaling frontend and backend containers
 on:
   push:
     branches:
-      - prod
+      - main
 
 jobs:
   deploy:
