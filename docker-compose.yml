@@ -8,7 +8,7 @@ services:
       - backend
     restart: always
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: ./nginx
     ports:
       - "8000:80"
@@ -16,26 +16,23 @@ services:
 
   frontend:
     build:
-      dockerfile: Dockerfile
-      context: ./notesapp-ui
+      dockerfile: Dockerfile.dev
+      context: "./notesapp-ui"
     volumes:
       - /app/node_modules
+      - ./notesapp-ui:/app
     ports:
       - "3000"
 
       
   backend:
     build:
-      dockerfile: Dockerfile
-      context: ./notesapp-server
+      dockerfile: Dockerfile.dev
+      context: "./notesapp-server"
     volumes:
       - /app/node_modules
+      - ./notesapp-server:/app
     ports:
       - "5000"
     environment:
       - .env
-
-
-
-
-
