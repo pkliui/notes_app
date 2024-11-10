@@ -1,15 +1,12 @@
-# this is a Dockerile for notesapp-server
-FROM node:20.11.0
+FROM node:lts-alpine
 
 WORKDIR /app
-
 COPY ./package*.json ./
-
 RUN npm i
 
 COPY . .
 
-RUN npx prisma generate
-RUN npx prisma db push
+RUN npx prisma migrate dev
+RUN npx prisma migrate status
 
 CMD ["npm", "run",  "dev"]
