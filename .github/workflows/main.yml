@@ -46,7 +46,7 @@ jobs:
         run: docker ps -a
 
       - name: Scale up containers, nginx keeps routing to the old ones
-        run: docker compose up -d --scale frontend=2 --scale backend=2 --wait
+        run: docker compose up -d --scale frontend=2 --wait
 
       - name: Reload nginx without restarting its container
         # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1), 
@@ -67,6 +67,19 @@ jobs:
           # put the new container into use and reload nginx
           docker compose up -d --scale frontend=1 --wait
           docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload
+
+
+      - name: Scale up containers, nginx keeps routing to the old ones
+        run: docker compose up -d --scale backend=2 --wait
+
+      - name: Reload nginx without restarting its container
+        # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1), 
+        # given the nginx image is notes_app-nginx
+        run: docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload 
+
+      - name: Containers after scaling up
+        run: docker ps -a
+
 
       - name: Update the backend
         run: |

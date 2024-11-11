@@ -12,6 +12,10 @@ services:
       context: ./nginx
     ports:
       - "8000:80"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
+
 
 
   frontend:
@@ -22,6 +26,9 @@ services:
       - /app/node_modules
     ports:
       - "3000"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
 
       
   backend:
@@ -34,3 +41,6 @@ services:
       - "5000"
     environment:
       - .env
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
