@@ -14,6 +14,7 @@ services:
       - "8000:80"
     mem_reservation: "500M"
     mem_limit: "2000M"
+    memswap_limit: 6G
 
 
 
@@ -27,6 +28,7 @@ services:
       - "3000"
     mem_reservation: "500M"
     mem_limit: "2000M"
+    memswap_limit: 6G
 
       
   backend:
@@ -41,3 +43,4 @@ services:
       - .env
     mem_reservation: "500M"
     mem_limit: "2000M"
+    memswap_limit: 6G
