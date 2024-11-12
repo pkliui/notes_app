@@ -1,6 +1,6 @@
 # TypeScript React Node.js application for making daily notes
 
-This is a documentation for a daily notes application that you can test [here](http://16.171.226.39:8000/). The application allows users to add, modify and delete daily notes through a web interface. 
+The following can be seen as some kind of a tutorial one can follow to make a [daily notes application](http://16.171.226.39:8000/). The application allows users to add, modify and delete daily notes through a web interface. 
 
 > **Frontend**: Built with TypeScript and React, providing an interactive UI.
 
