@@ -1,5 +1,8 @@
 # TypeScript React Node.js application for making daily notes
 
+NB: **AWS EC2 is not running at present. Hence inability to launch the program. **
+
+
 The following can be seen as some kind of a tutorial one can follow to make a [daily notes application](http://16.171.226.39:8000/). The application allows users to add, modify and delete daily notes through a web interface. 
 
 > **Frontend**: Built with TypeScript and React, providing an interactive UI.
