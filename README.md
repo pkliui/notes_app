@@ -2,6 +2,9 @@
 
 Welcome to [**The Green Notes App - a daily notes application. Try it here!**](http://16.171.226.39:8000/) 
 
+NB: **AWS EC2 is not running at present. Hence inability to launch the program. **
+
+
  [**Read full online documentation here**](docs/docs.md)
 
 ![image](https://github.com/user-attachments/assets/3c3d63d2-a5e4-4296-82fc-94425ed4a85b)
