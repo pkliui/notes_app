@@ -5,6 +5,7 @@ COPY ./package*.json ./
 RUN npm i
 
 COPY . .
+COPY .env ./
 
 RUN npx prisma migrate dev
 RUN npx prisma migrate status

@@ -4,8 +4,8 @@ services:
 
   nginx:
     depends_on:
-      - frontend
-      - backend
+      - frontend_service
+      - backend_service
     restart: always
     build:
       dockerfile: Dockerfile.dev
@@ -14,7 +14,7 @@ services:
       - "8000:80"
 
 
-  frontend:
+  frontend_service:
     build:
       dockerfile: Dockerfile.dev
       context: "./notesapp-ui"
@@ -24,8 +24,8 @@ services:
     ports:
       - "3000:3000"
 
-      
-  backend:
+
+  backend_service:
     build:
       dockerfile: Dockerfile.dev
       context: "./notesapp-server"
