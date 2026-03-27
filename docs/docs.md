@@ -730,6 +730,7 @@ sudo chmod 660 /var/run/docker.sock
 
 - To install a runner, follow the instructions here https://github.com/pkliui/notes_app/settings/actions/runners/new up until # Create the runner and start the configuration experience:
 
+Copy the required commands from Github Actions.
 
 ```bash
 # Create a folder
