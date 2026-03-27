@@ -4,8 +4,8 @@ services:
 
   nginx:
     depends_on:
-      - frontend
-      - backend
+      - frontend_service
+      - backend_service
     restart: always
     build:
       dockerfile: Dockerfile
@@ -18,7 +18,7 @@ services:
 
 
 
-  frontend:
+  frontend_service:
     build:
       dockerfile: Dockerfile
       context: "./notesapp-ui"
@@ -30,8 +30,8 @@ services:
     mem_limit: "2000M"
     memswap_limit: 2G
 
-      
-  backend:
+
+  backend_service:
     build:
       dockerfile: Dockerfile
       context: "./notesapp-server"
