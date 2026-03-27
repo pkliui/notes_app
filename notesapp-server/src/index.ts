@@ -1,15 +1,19 @@
-// holds server and API code
-
+import "dotenv/config";
 import express from "express";
-import cors from "cors"; 
-import { PrismaClient } from "@prisma/client"; // the interface to our database 
+import cors from "cors";
+import { PrismaClient } from "./generated/prisma/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
-// create a new express app and add Prisma DB client
+const PORT = process.env.PORT || 5000;
+
+// create a new express app and a Prisma client
 const app = express();
-const prisma = new PrismaClient();
+const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
-app.use(express.json()); 
+app.use(express.json());
 app.use(cors());
 
 // create get endpoint
@@ -20,7 +24,7 @@ app.get("/api/notes", async (req, res) => {
      const notes = await prisma.note.findMany();
     // update with the notes!!
     res.json(notes);
-})  
+})
 
 // create post endpoint to add notes
 app.post("/api/notes", async (req, res) => {
@@ -86,6 +90,6 @@ app.delete("/api/notes/:id", async (req, res) =>{
     }
 })
 
-app.listen(5000, () =>{
-        console.log("server running on localhost:5000")
+app.listen(PORT, () =>{
+        console.log(`server running on localhost:${PORT}`)
 });
