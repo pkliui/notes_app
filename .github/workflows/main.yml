@@ -14,7 +14,7 @@ jobs:
 
       - name: Create an environment file
         run: |
-        
+
           cd ~/actions-runner/_work/notes_app/notes_app/notesapp-server
           echo "DATABASE_URL=${{secrets.DATABASE_URL}}" > .env
 
@@ -23,22 +23,28 @@ jobs:
         with:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_TOKEN}}
-  
+
+      - name: List backend files for debug
+        run: |
+          cd ~/actions-runner/_work/notes_app/notes_app/notesapp-server
+          ls -l prisma
+          ls -l prisma/migrations || echo "No migrations folder"
+
       - name: Build and push updated Docker images for frontend, backend and nginx
         run: |
 
           cd ~/actions-runner/_work/notes_app/notes_app/notesapp-ui
-          docker build -t pkliui/notes_app:notes_app-frontend .
+          docker build --no-cache -t pkliui/notes_app:notes_app-frontend .
           docker push pkliui/notes_app:notes_app-frontend
           cd ..
-          
+
           cd ~/actions-runner/_work/notes_app/notes_app/notesapp-server
-          docker build -t pkliui/notes_app:notes_app-backend .
+          docker build --no-cache -t pkliui/notes_app:notes_app-backend .
           docker push pkliui/notes_app:notes_app-backend
           cd ..
-          
+
           cd ~/actions-runner/_work/notes_app/notes_app/nginx
-          docker build -t pkliui/notes_app:notes_app-nginx .
+          docker build --no-cache -t pkliui/notes_app:notes_app-nginx .
           docker push pkliui/notes_app:notes_app-nginx
           cd ..
 
@@ -49,19 +55,19 @@ jobs:
         run: docker compose up -d --scale frontend=2 --wait
 
       - name: Reload nginx without restarting its container
-        # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1), 
+        # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1),
         # given the nginx image is notes_app-nginx
-        run: docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload 
+        run: docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload
 
       - name: Containers after scaling up
         run: docker ps -a
 
       - name: Update the frontend
         run: |
-        
+
           # get the "old" container ID (this is the currently running container)
           old_frontend_id=$(docker ps -f name=notes_app-frontend --format '{{.ID}} {{.CreatedAt}}' | sort -k2,3 | head -n 1 | awk '{print $1}')
-          # take the old container offline  
+          # take the old container offline
           docker stop $old_frontend_id
           docker rm $old_frontend_id
           # put the new container into use and reload nginx
@@ -73,9 +79,9 @@ jobs:
         run: docker compose up -d --scale backend=2 --wait
 
       - name: Reload nginx without restarting its container
-        # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1), 
+        # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) command gets the containers' name (most probably notes_app-nginx-1),
         # given the nginx image is notes_app-nginx
-        run: docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload 
+        run: docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload
 
       - name: Containers after scaling up
         run: docker ps -a
@@ -83,15 +89,15 @@ jobs:
 
       - name: Update the backend
         run: |
-        
+
           # get the "old" container ID (this is the currently running container)
           old_backend_id=$(docker ps -f name=notes_app-backend --format '{{.ID}} {{.CreatedAt}}' | sort -k2,3 | head -n 1 | awk '{print $1}')
-          # take the old container offline  
+          # take the old container offline
           docker stop $old_backend_id
           docker rm $old_backend_id
           # put the new container into use and reload nginx
           docker compose up -d --scale backend=1 --wait
           docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep notes_app-nginx) nginx -s reload
-          
+
       - name: Containers after updating frontend and backend
         run: docker ps -a
