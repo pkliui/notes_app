@@ -1,7 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { PrismaClient } from "./generated/prisma/client";
+
+import { PrismaClient } from "./generated/prisma/client.js";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 console.log("DATABASE_URL:", process.env.DATABASE_URL);
@@ -91,5 +92,5 @@ app.delete("/api/notes/:id", async (req, res) =>{
 })
 
 app.listen(PORT, () =>{
-        console.log(`server running on localhost:${PORT}`)
+        console.log(`Backend is running on localhost:${PORT}`)
 });

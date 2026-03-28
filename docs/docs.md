@@ -6,7 +6,7 @@ The following can be seen as some kind of a tutorial one can follow to make a [d
 
 > **Backend**: Developed with TypeScript and Node.js. Prisma acts as the ORM to interact with the database, and the Express library is used to set up the API endpoints.
 
-> **Database**: Notes are stored in a PostgreSQL database hosted by Neon.tech.
+> **Database**: SQLite database
 
 > **Deployment**: The application is deployed on an AWS EC2 Ubuntu instance using Docker containers.
 
@@ -27,12 +27,13 @@ The following can be seen as some kind of a tutorial one can follow to make a [d
     - [Install development dependencies ](#install-development-dependencies-)
     - [Install development and production dependencies ](#install-development-and-production-dependencies-)
     - [Set up a new TypeScript configuration for the backend ](#set-up-a-new-typescript-configuration-for-the-backend-)
-    - [Write the backend code ](#write-the-backend-code-)
-    - [Setup Prisma and start your server locally ](#setup-prisma-and-start-your-server-locally-)
+    - [Setup Prisma ](#setup-prisma-)
       - [Configure Prisma](#configure-prisma)
       - [Create or migrate the database items, generate Prisma client](#create-or-migrate-the-database-items-generate-prisma-client)
-      - [Start the backend server in development mode](#start-the-backend-server-in-development-mode)
+    - [Write the backend code ](#write-the-backend-code-)
+    - [Start the backend server in development mode](#start-the-backend-server-in-development-mode)
   - [Prototyping and Prisma ](#prototyping-and-prisma-)
+  - [.gitignore and .dockerignore](#gitignore-and-dockerignore)
 - [Dockerise the project for development ](#dockerise-the-project-for-development-)
   - [Frontend Dockerfile.dev for development ](#frontend-dockerfiledev-for-development-)
   - [Backend Dockerfile.dev for development ](#backend-dockerfiledev-for-development-)
@@ -74,6 +75,24 @@ The following can be seen as some kind of a tutorial one can follow to make a [d
 
 - Install *Node.js*, the JavaScript runtime, and its *npm* package manager. For example, by using the *nvm* version manager as described here https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
+
+- To check the existing node installations:
+```bash
+nvm ls
+```
+
+- To uninstall any particular node version:
+```bash
+nvm uninstall <version>
+```
+
+- To install any particular node version:
+```bash
+nvm install <version>
+nvm use <version>
+```
+- This project uses Node 22.2.2
+
 - For frontend, we will use *React*, which is a JavaScript library for building UIs and providing TypeScript support.
 
 - To set up a new React project, we will make use of *create-react-app* which a Node.js package (an npm package) that provides a tool to quickly set up a new React project, install all necessary dependencies, and configure TypeScript in one command.
@@ -109,7 +128,7 @@ npm start
 
 ## Set up the backend <a name="backend1"></a>
 
-- For the backend, we will use *TypeScript* with *Node.js*. Let's set up a new Node.js project that will serve as our backend API.
+- The backend will be written in *TypeScript* with *Node.js*. Let's set up a new Node.js project that will serve as our backend API.
 
 
 ### Set up a new Node.js project <a name="backend1-nodejs"></a>
@@ -119,7 +138,16 @@ npm start
 ```bash
 npm init
 ```
-- This command will walk you through creating a package.json file. Keep the defaults, for entry point (the file containing your backend code) specify "./src/index.ts" (or whatever is applicable in your case).
+
+- This command will walk you through creating a package.json file. Keep the defaults.
+- For entry point (the file containing your backend code) specify "./src/index.ts" (or whatever is applicable in your case)
+- In "scripts" add a new script for the development mode to run *nodemon* executable. Nodemon continuously monitors changes in your code and restarts the application automatically when any changes are detected:
+
+```bash
+"scripts": {
+  "dev": "nodemon"
+}
+```
 
 ### Install development dependencies <a name="backend1-dev-dependency"></a>
 
@@ -152,53 +180,16 @@ npm i cors express @prisma/client@latest prisma@latest @prisma/adapter-better-sq
 
 ### Set up a new TypeScript configuration for the backend <a name="backend1"></a>
 
-- Use the TypeScript compiler command-line tool (*tsc*) that comes with the *typescript* package to set up a new TypeScript configuration that will control how TS compiles and checks the code:
+- Use the TypeScript compiler command-line tool (*tsc*) that comes with the *typescript* package to set up a new TypeScript configuration that will control how TS compiles and checks the code. Being in "notes_app/notesapp-server" directory, run
 
 ```bash
 npx tsc --init
 ```
 
-- This command will create a *tsconfig.json* file in your "notes_app/notesapp-server" directory.
-- You can modify this file later to adjust settings for production.
-```json
-{
-  "compilerOptions": {
-    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs",                                /* Specify what module code is generated. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "strict": true,                                      /* Enable all strict type-checking options. */
-    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
-  }
-}
-```
+- This command will create a *tsconfig.json* file directory that can be used with default settings.
+- NOTE that "exactOptionalPropertyTypes": true requires i.a. validation of the database URL in prisma.config.ts (see the section about prisma below)
 
-- Next, open your *package.json* file and in "scripts" add a new script for the development mode to run *nodemon* executable.
-- Nodemon continuously monitors changes in your code and restarts the application automatically when any changes are detected:
-
-```bash
-"scripts": {
-  "dev": "nodemon"
-}
-```
-
-### Write the backend code <a name="backend2"></a>
-
-- Write your backend code in "notes_app/notesapp-server/src/index.ts" file.
-
-(EXPLANATION ABOUT BACKEND CODE PENDING)
-
-- We specify that our Express application will listen on port 5000 for backend requests:
-
-```typescript
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () =>{
-        console.log(`server running on localhost:${PORT}`)
-});
-```
-
-### Setup Prisma and start your server locally <a name="backend3"></a>
+### Setup Prisma <a name="backend3"></a>
 
 *Prisma* is a database toolkit and Object-Relational Mapping (ORM) library for Node.js and TypeScript. It allows you to define your database schema in a declarative way and generates a type-safe client for querying your database from TypeScript or JavaScript code. To get started, initialize Prisma in your backend project:
 
@@ -240,17 +231,38 @@ model Note{
   content String
 }
   ```
+
 **.env**
 
 - Specify the database URL, example for sqlite:
 ```
 DATABASE_URL="file:./dev.db"
 ```
-- add .env to .gitignore and .dockerignore
 
 **prisma.config.ts**
 
-- You can leave as it is The DATABASE_URL field was added automatically and will be read from .env.
+- Ensure "datasource" specifies "url" and add validation of environment variables as required by  "exactOptionalPropertyTypes": true in tsconfig.ts:
+
+```typescript
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+// Validate environment variables to satisfy exactOptionalPropertyTypes
+const databaseUrl = process.env["DATABASE_URL"];
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL environment variable is required");
+}
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+  },
+  datasource: {
+    url: databaseUrl,
+  },
+});
+```
 
 #### Create or migrate the database items, generate Prisma client
 
@@ -275,31 +287,65 @@ npx prisma generate
 
 > **Note:** In production, you will not use the `.env` file created during development. Instead, you will recreate it inside the Docker container by reading the `DATABASE_URL` value from GitHub secrets (see the production section below)
 
-#### Start the backend server in development mode
 
-To start your backend server with automatic restarts on code changes, run:
+### Write the backend code <a name="backend2"></a>
+
+- Write your backend code in "notes_app/notesapp-server/src/index.ts" file.
+- **NOTE: Node.js 22 supports ESM (ECMAScript Modules) natively**. This has the following implications.
+- Use import/export syntax:
+```
+import express from "express";
+import cors from "cors";
+```
+
+- Set "type": "module" in your package.json
+- Use .js extensions in import paths for your own files, even if the source file is .ts.*:
+```
+import { PrismaClient } from "./generated/prisma/client.js";
+```
+
+- We specify that our Express application will listen on port 5000 for backend requests:
+
+```typescript
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () =>{
+        console.log(`server running on localhost:${PORT}`)
+});
+```
+
+### Start the backend server in development mode
+
+- **Note: Because your code uses explicit .js extensions in import paths (for ESM compatibility), you must compile your TypeScript code before running it:**
+```bash
+npx tsc
+```
+- This ensures Node.js can resolve all imports correctly. Then start your backend server (for example, with nodemon):
 
 ```bash
 npm run dev
 ```
-(or equivalently, npx nodemon)
 
-- Express will now be running on port 5000. If you visit http://localhost:5000/api/notes, you will see the notes available in your database.
-- Switch back to the UI window you previously opened at http://localhost:3000, refresh the page, and you should see it updated with notes from the database.
+- Express will now be running on port 5000. If you visit http://localhost:5000/api/notes, you should see the notes currently stored in your database as a JSON response.
+- Switch back to the UI window you previously opened at http://localhost:3000, refresh the page, and you should see it updated with the notes fetched from the backend database.
 
 ## Prototyping and Prisma <a name="backend4"></a>
 
 - To inspect an already existing database, you can run ```npx prisma studio```
 
-- During the development stage, you may want to make changes to your "prisma.schema" file, e.g.  adding another model.
+- After making any changes to "prisma.schema", run npx prisma db push to apply those changes directly to the database. Note: prisma db push does not keep a history of schema changes
+- Instead, to keep a history of your database changes, use ``` npx prisma migrate dev``` during development. This command creates migration files under prisma/migrations. For production deployments, use ```npx prisma migrate deploy``` to apply migrations in a controlled and reliable way
 
-- For quick prototyping, Prisma recommends running `npx prisma generate` to generate a new Prisma Client (by default, this is generated into `./node_modules/.prisma/client`), followed by `npx prisma db push` to apply your schema changes directly to the database. **Note:** `prisma db push` does not keep a history of schema changes.
-
-- To maintain a history of your database changes, use `npx prisma migrate dev` during development. This command creates migration files under `prisma/migrations`. For production deployments, use `npx prisma migrate deploy` to apply migrations in a controlled way.
+- Finally, run `npx prisma generate` to generate a new Prisma Client
+- By default, the Prisma client is generated into ./node_modules/.prisma/client.
+- In this project, we customize the output path to src/generated/prisma using the output option in the generator client block of schema.prisma.
 
 <br />
 <br />
 <br />
+
+## .gitignore and .dockerignore
+- ** NOTE: add .env, node_modules, /src/generated/prisma to .gitignore ** and  add node_modules, /src/generated/prisma to .dockerignore
 
 # Dockerise the project for development <a name="dockerise"></a>
 
@@ -320,7 +366,7 @@ npm run dev
 <br />
 
 ```docker
-FROM node:lts-alpine
+FROM node:22.22.2-alpine
 
 WORKDIR /app
 COPY ./package*.json ./
@@ -337,17 +383,15 @@ CMD ["npm", "run",  "start"]
 - Set the work directory inside Docker to "/app" and copy package.json files into there
 - Install all dependencies  specified in these json files by running ```RUN npm i``` and copy the rest of the content from your local folder "notes_app/notesapp-ui" to the work folder in Docker
 - Run ```CMD ["npm", "run",  "start"]``` that will run our "start" script defined in package.json (```"start": "react-scripts start"```).
-
 - In the following, we will use docker compose to run our application, but one can test the  dockerfile already now:
 
-    ```bash
-    docker build -t notesapp-ui -f Dockerfile.dev .
+```bash
+docker build -t notesapp-ui -f Dockerfile.dev .
 
-    docker run -t notesapp-ui -p 3000:3000
-    ```
+docker run -t notesapp-ui -p 3000:3000
+```
 
-    - Head to http://localhost:3000 to see the UI running inside of our docker container. At this point it has no access to the database yet.
-
+- Head to http://localhost:3000 to see the UI running inside of our docker container. At this point it has no access to the database yet.
 
 <br />
 
@@ -355,10 +399,10 @@ CMD ["npm", "run",  "start"]
 
 - Similarly, we make a Dockerfile.dev for the backend in "notes_app/notesapp-server" directory.
 
-> [!WARNING]  **Create new .dockerignore and .gitignore files and add "node_modules"  and "/src/generated/prisma" to these files as we do not want "node_modules" to be copied from the local machine**. Do not add .env to dockerignore for development because it will be used by Dockerfile.
+> [!NOTE]  **Do not add .env to dockerignore for development because it will be used by Dockerfile.**
 >
 ```docker
-FROM node:lts-alpine
+FROM node:22.22.2-alpine
 
 WORKDIR /app
 COPY ./package*.json ./
@@ -368,27 +412,25 @@ COPY . .
 COPY .env ./
 
 RUN npx prisma migrate dev
+RUN npx prisma generate
 RUN npx prisma migrate status
 
 CMD ["npm", "run",  "dev"]
-
 ```
 
-- We use node:lts-alpine distribution because of its small size
+- We use the alpine distribution because of its small size
 - Set the work work directory inside the Docker to "/app" and copy package.json files to there
 - Install all dependencies  specified in these json files by running ```RUN npm i``` and copy the rest of the content from your local folder "notes_app/notesapp-server" to the work folder in Docker
-
-- Run ```npx prisma migrate dev``` to migrate any changes that could have happened to the prisma.schema file.
-
+- Run ```npx prisma migrate dev``` to migrate any changes that could have happened to the prisma.schema file and ```RUN npx prisma generate``` to regenerate the prisma client.
 - Finally, run ```CMD ["npm", "run",  "dev"]``` that will run nodemon, as defined in package.json (``` "dev": "nodemon"```).
 
 - In the following, we will use docker compose, but one can test the dockerfile already now:
 
-    ```bash
-    docker build -t notesapp-server -f Dockerfile.dev .
-    docker run -t notesapp-server -p 5000:5000
-    ```
-  - Head to http://localhost:5000/api/notes to see the database content
+```bash
+docker build -t notesapp-server -f Dockerfile.dev .
+docker run -t notesapp-server -p 5000:5000
+```
+- Head to http://localhost:5000/api/notes to see the database content
 
 <br />
 
@@ -403,11 +445,11 @@ CMD ["npm", "run",  "dev"]
 
 ```nginx
 upstream frontend {
-    server frontend_service:3000; # frontend service in docker compose
+    server frontend:3000; # frontend service in docker compose
 }
 
 upstream backend {
-    server backend_service:5000; # backend service in docker compose
+    server backend:5000; # backend service in docker compose
 }
 
 server {
@@ -424,7 +466,7 @@ server {
 ```
 
 - The `upstream` blocks define groups of servers (frontend and backend) that Nginx can forward requests to. These groups are referenced later in the `proxy_pass` directives inside the `server` block.
-- In our Docker Compose setup, the frontend and backend services are available on ports 3000 and 5000, and are named `frontend_service` and `backend_service` respectively. These names are used in the Nginx config to route traffic to the correct containers.
+- In our Docker Compose setup, the frontend and backend services are available on ports 3000 and 5000, and are named `frontend` and `backend` respectively. These names are used in the Nginx config to route traffic to the correct containers.
 - The `server` block is the main Nginx configuration. It listens on port 80 and uses `location` blocks to route incoming requests: requests to `/api` are forwarded to the backend service, while all other requests are sent to the frontend service.
 
 ### Create Nginx Dockerfile
@@ -442,16 +484,16 @@ ADD ./default.conf /etc/nginx/conf.d/default.conf
 
 ## Unite everything with Docker Compose  <a name="dockerise4"></a>
 
-- Next, create a `docker-compose-dev.yml` file in your main project directory (`notes_app`).
-- Define three services: one for Nginx (the reverse proxy), one for the frontend, and one for the backend.
+- Next, create a `docker-compose-dev.yml` file in your main project directory (`notes_app`)
+- Define three services: one for Nginx (the reverse proxy), one for the frontend, and one for the backend
 - Map the relevant folders from our local machine into the corresponding Docker containers
-- Create an anonymous (container-only) volume for the /app/node_modules directory inside the container, which acts as a reserved space inside the container where Docker installs all the required Node.js modules..
+- Create an anonymous (container-only) volume for the /app/node_modules directory inside the container, which acts as a reserved space inside the container where Docker installs all the required Node.js modules
 - For the backend, we also reference the local `.env` file containing the `DATABASE_URL` environment variable. (In production, this file will be recreated using GitHub Actions' Secrets.)
 
 <br />
 <br />
 
-```docker
+```yaml
 version: '3.8'
 
 services:
@@ -492,7 +534,7 @@ services:
       - .env
 ```
 
-- Run the docker compose file
+- Run the docker compose files
 
 ```bash
 docker compose -f docker-compose-dev.yml up --build
@@ -605,7 +647,8 @@ CMD ["npm", "run",  "start"]
 
 ## Configure Nginx for serving <a name="production3"></a>
 
-- We will serve our built React application with Nginx. Make a new folder "nginx" under "notes_app/notesapp-ui/" and a new default.conf file in it:
+- We will serve our built React application with Nginx.
+- **IMPORTANT: Make a new folder "nginx" under "notes_app/notesapp-ui/" and a new default.conf file in it:**
 
 ```nginx
 server {

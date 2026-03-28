@@ -1,5 +1,4 @@
-# this is a Dockerile for notesapp-ui
-FROM node:lts-alpine
+FROM node:22.22.2-alpine
 
 WORKDIR /app
 COPY ./package*.json ./
