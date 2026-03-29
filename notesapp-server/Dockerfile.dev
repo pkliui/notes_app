@@ -11,4 +11,4 @@ RUN npx prisma migrate dev
 RUN npx prisma generate
 RUN npx prisma migrate status
 
-CMD ["npm", "run",  "dev"]
+CMD ["sh", "-c", "npx tsc && npm run dev"]

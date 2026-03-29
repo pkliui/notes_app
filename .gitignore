@@ -8,7 +8,6 @@
 /notesapp-server/.env
 /notesapp-server/src/generated/prisma
 /notesapp-server/dist
-/notesapp-server/dev.db
 
 # testing
 /coverage

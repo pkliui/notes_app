@@ -1,19 +1,18 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client.js";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 const PORT = process.env.PORT || 5000;
 
-// create a new express app and a Prisma client
-const app = express();
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
+const connectionString = `${process.env.DATABASE_URL}`;
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
