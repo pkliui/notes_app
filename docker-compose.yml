@@ -24,6 +24,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: "./notesapp-ui"
+    ports:
+      - "3000"
     mem_reservation: "500M"
     mem_limit: "2000M"
     memswap_limit: 2G
@@ -34,6 +36,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: "./notesapp-server"
+    ports:
+      - "5000"
     environment:
       - .env
     mem_reservation: "500M"
