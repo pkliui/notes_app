@@ -5,7 +5,6 @@ COPY ./package*.json ./
 RUN npm i
 
 COPY . .
-COPY .env ./
 
 RUN npx prisma migrate deploy
 RUN npx prisma generate
