@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "8000:80"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
+
+
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: "./notesapp-ui"
+    volumes:
+      - /app/node_modules
+    ports:
+      - "3000"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
+
+
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: "./notesapp-server"
+    volumes:
+      - /app/node_modules
+    ports:
+      - "5000"
+    environment:
+      - .env
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G

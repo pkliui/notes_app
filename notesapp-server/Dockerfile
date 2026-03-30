@@ -7,8 +7,9 @@ RUN npm i
 COPY . .
 COPY .env ./
 
-RUN npx prisma migrate dev
+RUN npx prisma migrate deploy
 RUN npx prisma generate
-RUN npx prisma migrate status
 
-CMD ["sh", "-c", "npx tsc && npm run dev"]
+EXPOSE 5000
+RUN npm run build
+CMD ["npm", "run",  "start"]

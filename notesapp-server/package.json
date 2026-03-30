@@ -5,8 +5,9 @@
   "main": "src/index.ts",
   "type":"module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon"
+    "dev": "npx nodemon",
+    "build": "NODE_ENV=production npx tsc",
+    "start": "NODE_ENV=production node --trace-deprecation src/index.js"
   },
   "author": "",
   "license": "ISC",
