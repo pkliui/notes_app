@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-// give notes a type 
+// give notes a type
 type Note = {
   id: number;
   title: string;
@@ -16,7 +16,7 @@ const App = () => {
 
   // set of dummy notes
   const [notes, setNotes] = useState<Note[]>([]);
-    
+
   //
   // set state variables
   //
@@ -32,7 +32,7 @@ const App = () => {
     // get notes from DB
     const fetchNotes = async() => {
       try{
-        const response = await fetch("http://localhost:5000/api/notes")
+        const response = await fetch("/api/notes")
         const notes: Note[] = await response.json()
         // update notes we just got rom API
         setNotes(notes)
@@ -73,7 +73,7 @@ const App = () => {
 
     try{
       const response = await fetch
-      ("http://localhost:5000/api/notes",
+      ("/api/notes",
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ const App = () => {
     // actually update the note
     try{
       const response = await fetch
-      (`http://localhost:5000/api/notes/${selectedNote.id}`,
+      (`/api/notes/${selectedNote.id}`,
         {
           method: 'PUT',
           headers: {
@@ -167,7 +167,7 @@ const App = () => {
   ) => {
     event.stopPropagation();
     try{
-      await fetch(`http://localhost:5000/api/notes/${noteId}`,
+      await fetch(`/api/notes/${noteId}`,
         {
           method:"DELETE",
         })
@@ -185,21 +185,21 @@ const App = () => {
   return (
     <div className="app-container">
       <h1 className="app-title">The Green Notes App</h1>
-      {/* 
-      // set up a submission form for notes 
+      {/*
+      // set up a submission form for notes
       */}
       <form className="note-form"
         // wire up the submit function to the form
-        onSubmit={(event) => 
+        onSubmit={(event) =>
           selectedNote
           ? handleUpdateNote(event)
           : handleAddNote(event)
         }
       >
-        {/* 
+        {/*
         // set up form's title and content area
         */}
-        <input 
+        <input
           // title input - binded to the title state variable = whatever title state variable is
           value={title}
           onChange={(event)=>
@@ -207,7 +207,7 @@ const App = () => {
           }
           placeholder="What do you want to note?" required
         />
-        <textarea 
+        <textarea
           // text area - binded to the content state variable
           value={content}
           onChange={(event)=> setContent(event.target.value)
@@ -216,16 +216,16 @@ const App = () => {
         />
 
         {selectedNote ? (
-            // handle button logic depending if a note was selected or not 
+            // handle button logic depending if a note was selected or not
             <div className="edit-buttons">
               <button type="submit">Save</button>
               <button onClick={handleCancel}>Cancel</button>
             </div>
           ):(
-            <button type="submit">Add Note</button>)}      
+            <button type="submit">Add Note</button>)}
       </form>
-      
-      {/* 
+
+      {/*
       Notes grid
       */}
       <div className="notes-grid">
@@ -240,7 +240,7 @@ const App = () => {
             >
               <button
                 // delete button
-                onClick={(event) => 
+                onClick={(event) =>
                   deleteNote(event, note.id)
                 }>x</button>
             </div>
