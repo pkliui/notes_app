@@ -3,6 +3,7 @@ version: '3.8'
 services:
 
   nginx:
+    image: pkliui/notes_app:notes_app-nginx
     depends_on:
       - frontend
       - backend
@@ -19,6 +20,7 @@ services:
 
 
   frontend:
+    image: pkliui/notes_app:notes_app-frontend
     build:
       dockerfile: Dockerfile
       context: "./notesapp-ui"
@@ -30,6 +32,7 @@ services:
 
 
   backend:
+    image: pkliui/notes_app:notes_app-backend
     build:
       dockerfile: Dockerfile
       context: "./notesapp-server"
