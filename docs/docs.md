@@ -602,11 +602,13 @@ CMD ["nginx", "-g", "daemon off;"]
 "scripts": {
   "dev": "npx nodemon",
   "build": "NODE_ENV=production npx tsc",
-  "start": "NODE_ENV=production node --trace-deprecation src/index.js"
+  "start": "NODE_ENV=production npx prisma migrate deploy && node --trace-deprecation src/index.js"
+
 },
 ```
-- `npx tsc` runs the TypeScript compiler and transpiles the TypeScript source files into JavaScript.
-- In this project, the compiled output is currently emitted into the same `src` directory, so `node src/index.js` starts the compiled backend. This behaviour depends on your current config in tsconfig.json:
+- `npx tsc` runs the TypeScript compiler and transpiles the TypeScript source files into JavaScript
+- Run the prisma migrations here at container runtime, before *Node* actually runs the compiled file
+- In this project, the compiled output is currently emitted into the same `src` directory, so `node src/index.js` starts the compiled backend. Note that this behaviour depends on your current config in tsconfig.json:
 ```
 // "rootDir": "./src",
 // "outDir": "./dist",
@@ -615,7 +617,7 @@ CMD ["nginx", "-g", "daemon off;"]
 ### Modify backend Dockerfile
 
 - The initial steps up to the COPY command are the same as in the development Dockerfile.
-- Apply any schema changes and update the Prisma client.
+- Generate a new or update an existing Prisma client
 - Build the TypeScript code and start the server.
 - Note: The .env file is recreated from GitHub secrets in production, so it is explicitly copied to ensure it is available to the application code.
 
@@ -629,7 +631,6 @@ RUN npm i
 COPY . .
 COPY .env ./
 
-RUN npx prisma migrate deploy
 RUN npx prisma generate
 
 RUN npm run build
