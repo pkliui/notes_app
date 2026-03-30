@@ -6,10 +6,13 @@ import { PrismaClient } from "./generated/prisma/client.js";
 
 const PORT = process.env.PORT || 5000;
 
-const connectionString = `${process.env.DATABASE_URL}`;
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
+// Validate environment variables to satisfy exactOptionalPropertyTypes
+const databaseUrl = process.env["DATABASE_URL"];
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL environment variable is required");
+}
 
-const adapter = new PrismaPg({ connectionString });
+const adapter = new PrismaPg({ connectionString: databaseUrl });
 const prisma = new PrismaClient({ adapter });
 
 const app = express();
@@ -91,5 +94,5 @@ app.delete("/api/notes/:id", async (req, res) =>{
 })
 
 app.listen(PORT, () =>{
-        console.log(`Backend is running on localhost:${PORT}`)
+        console.log(`Backend is running on port ${PORT}`)
 });
