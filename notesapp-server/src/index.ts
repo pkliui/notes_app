@@ -1,18 +1,21 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { PrismaClient } from "./generated/prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "./generated/prisma/client.js";
 
 const PORT = process.env.PORT || 5000;
 
-// create a new express app and a Prisma client
-const app = express();
-const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL });
+// Validate environment variables to satisfy exactOptionalPropertyTypes
+const databaseUrl = process.env["DATABASE_URL"];
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL environment variable is required");
+}
+
+const adapter = new PrismaPg({ connectionString: databaseUrl });
 const prisma = new PrismaClient({ adapter });
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
@@ -91,5 +94,5 @@ app.delete("/api/notes/:id", async (req, res) =>{
 })
 
 app.listen(PORT, () =>{
-        console.log(`server running on localhost:${PORT}`)
+        console.log(`Backend is running on port ${PORT}`)
 });

@@ -3,27 +3,27 @@ version: '3.8'
 services:
 
   nginx:
+    image: pkliui/notes_app:notes_app-nginx
     depends_on:
-      - frontend_service
-      - backend_service
+      - frontend
+      - backend
     restart: always
     build:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - "8000:80"
+      - "80:80"
     mem_reservation: "500M"
     mem_limit: "2000M"
     memswap_limit: 2G
 
 
 
-  frontend_service:
+  frontend:
+    image: pkliui/notes_app:notes_app-frontend
     build:
       dockerfile: Dockerfile
       context: "./notesapp-ui"
-    volumes:
-      - /app/node_modules
     ports:
       - "3000"
     mem_reservation: "500M"
@@ -31,16 +31,15 @@ services:
     memswap_limit: 2G
 
 
-  backend_service:
+  backend:
+    image: pkliui/notes_app:notes_app-backend
     build:
       dockerfile: Dockerfile
       context: "./notesapp-server"
-    volumes:
-      - /app/node_modules
     ports:
       - "5000"
-    environment:
-      - .env
+    env_file:
+      - ./notesapp-server/.env
     mem_reservation: "500M"
     mem_limit: "2000M"
     memswap_limit: 2G
