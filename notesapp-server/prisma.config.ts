@@ -10,5 +10,5 @@ export default defineConfig({
   migrations: {
     path: "prisma/migrations",
   },
-  ...(databaseUrl ? { datasource: { url: databaseUrl } } : {}),
+  ...(databaseUrl ? { datasource: { url: databaseUrl } } : {}), // in-line with "exactOptionalPropertyTypes": true
 });
