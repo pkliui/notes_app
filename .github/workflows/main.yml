@@ -46,7 +46,7 @@ jobs:
       - name: Scale up containers, nginx keeps routing to the old ones
         run: |
           cd ~/actions-runner/_work/notes_app/notes_app/
-          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale frontend=2 --wait frontend
+          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale frontend=2 --wait
 
       - name: Reload nginx without restarting its container
         # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep staging-nginx) command gets the containers' name (most probably staging-nginx-1),
@@ -67,13 +67,13 @@ jobs:
           docker rm $old_frontend_id
           # put the new container into use and reload nginx
           cd ~/actions-runner/_work/notes_app/notes_app/
-          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale frontend=1 --wait frontend
+          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale frontend=1 --wait
           docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep staging-nginx) nginx -s reload
 
       - name: Scale up containers, nginx keeps routing to the old ones
         run: |
           cd ~/actions-runner/_work/notes_app/notes_app/
-          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale backend=2 --wait backend
+          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale backend=2 --wait
 
       - name: Reload nginx without restarting its container
         # in the following, $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep staging-nginx) command gets the containers' name (most probably staging-nginx-1),
@@ -95,7 +95,7 @@ jobs:
           docker rm $old_backend_id
           # put the new container into use and reload nginx
           cd ~/actions-runner/_work/notes_app/notes_app/
-          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale backend=1 --wait backend
+          docker compose -f docker-compose-staging.yml up -d --no-build --force-recreate --scale backend=1 --wait
           # with compose project name "staging", the nginx and other containers resolve to staging-nginx-1, staging-frontend-1, staging-frontend-2, staging-backend-1, staging-backend-2
           docker exec $(sudo docker ps -q | xargs sudo docker inspect --format='{{.Name}}' | grep staging-nginx) nginx -s reload
 
