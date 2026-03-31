@@ -1,0 +1,47 @@
+name: staging
+
+version: '3.8'
+
+services:
+
+  nginx:
+    image: pkliui/notes_app:staging-nginx
+    depends_on:
+      - frontend
+      - backend
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "8000:80"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
+
+
+
+  frontend:
+    image: pkliui/notes_app:staging-frontend
+    build:
+      dockerfile: Dockerfile
+      context: "./notesapp-ui"
+    ports:
+      - "3000"
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
+
+
+  backend:
+    image: pkliui/notes_app:staging-backend
+    build:
+      dockerfile: Dockerfile
+      context: "./notesapp-server"
+    ports:
+      - "5000"
+    env_file:
+      - ./notesapp-server/.env
+    mem_reservation: "500M"
+    mem_limit: "2000M"
+    memswap_limit: 2G
